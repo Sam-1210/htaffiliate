@@ -9,7 +9,7 @@ import org.testng.*;
 import org.testng.annotations.*;
 
 @Listeners({org.testng.reporters.XMLReporter.class})
-public class BaseTest {
+public class BaseTest implements IHookable {
     protected final ApplicationProperties applicationProperties = ApplicationProperties.getInstance();
 
     @BeforeSuite
@@ -60,6 +60,13 @@ public class BaseTest {
         } catch (Exception e) {
             Logger.Except(e);
         }
+    }
+
+    @Override
+    public void run(IHookCallBack callBack, ITestResult testResult) {
+        Logger.Heading("Running:  " + testResult.getName());
+        callBack.runTestMethod(testResult);
+        Logger.Heading("Finished: " + testResult.getName());
     }
 
     @AfterSuite

@@ -1,6 +1,7 @@
 package org.shopnow.base;
 
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.support.PageFactory;
 import org.shopnow.structures.ApplicationProperties;
 import org.shopnow.utility.DriverManager;
 import org.shopnow.utility.Logger;
@@ -14,6 +15,7 @@ public class BasePage {
     protected WebDriver driver;
     public BasePage() {
         driver = DriverManager.getInstance().getDriver();
+        PageFactory.initElements(driver, this);
     }
 
     public static Object getInstanceOf(Class<?> clazz, Object... initArgs) {
@@ -28,9 +30,9 @@ public class BasePage {
             pageClassName = pageClassName.substring(8).trim();
 
         pageClassName = switch (ApplicationProperties.getInstance().getPlatform()) {
-            case WEB -> "org.shopnow.pages.web." + pageClassName;
-            case MWEB -> "org.shopnow.pages.mweb." + pageClassName;
-            case AMP -> "org.shopnow.pages.amp." + pageClassName;
+            case WEB -> "org.shopnow.pom.pages.web." + pageClassName;
+            case MWEB -> "org.shopnow.pom.pages.mweb." + pageClassName;
+            case AMP -> "org.shopnow.pom.pages.amp." + pageClassName;
         };
 
         try {

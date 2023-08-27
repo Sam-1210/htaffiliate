@@ -1,0 +1,168 @@
+{
+  "data": [
+    {
+      "title": "Home",
+      "subcategories": [],
+      "url": ""
+    },
+    {
+      "stories": "https://shopnow.hindustantimes.com/fashion/sitemap/2023.xml",
+      "title": "Fashion",
+      "subcategories": [
+        {
+          "title": "Mens Wear",
+          "url": "mens-wear"
+        },
+        {
+          "title": "Womens Wear",
+          "url": "womens-wear"
+        },
+        {
+          "title": "Kids Wear",
+          "url": "kids-wear"
+        },
+        {
+          "title": "Footwear",
+          "url": "footwear"
+        },
+        {
+          "title": "Fashion Accessories",
+          "url": "fashion-accessories"
+        }
+      ],
+      "url": "fashion"
+    },
+    {
+      "stories": "https://shopnow.hindustantimes.com/electronics/sitemap/2023.xml",
+      "title": "Electronics",
+      "subcategories": [
+        {
+          "title": "Mobiles",
+          "url": "mobiles"
+        },
+        {
+          "title": "Laptops",
+          "url": "laptops"
+        },
+        {
+          "title": "Tablets",
+          "url": "tablets"
+        },
+        {
+          "title": "Gadgets",
+          "url": "gadgets"
+        },
+        {
+          "title": "Computer Accessories",
+          "url": "computer-accessories"
+        }
+      ],
+      "url": "electronics"
+    },
+    {
+      "stories": "https://shopnow.hindustantimes.com/health-and-beauty/sitemap/2023.xml",
+      "title": "Health And Beauty",
+      "subcategories": [
+        {
+          "title": "Skin Care",
+          "url": "skin-care"
+        },
+        {
+          "title": "Hair Care",
+          "url": "hair-care"
+        },
+        {
+          "title": "Grooming",
+          "url": "grooming"
+        },
+        {
+          "title": "Personal Care",
+          "url": "personal-care"
+        },
+        {
+          "title": "Health Care",
+          "url": "health-care"
+        },
+        {
+          "title": "Diet And Nutrition",
+          "url": "diet-and-nutrition"
+        }
+      ],
+      "url": "health-and-beauty"
+    },
+    {
+      "stories": "https://shopnow.hindustantimes.com/pet-supplies/sitemap/2023.xml",
+      "title": "Pet Care And Supplies",
+      "subcategories": [
+        {
+          "title": "Pet Food And Supplements",
+          "url": "pet-food-and-supplements"
+        },
+        {
+          "title": "Pet Grooming",
+          "url": "pet-grooming"
+        },
+        {
+          "title": "Pet Toys And Accessories",
+          "url": "pet-toys-and-accessories"
+        }
+      ],
+      "url": "pet-supplies"
+    },
+    {
+      "stories": "https://shopnow.hindustantimes.com/home-kitchen/sitemap/2023.xml",
+      "title": "Home And Kitchen",
+      "subcategories": [
+        {
+          "title": "Home Appliances",
+          "url": "home-appliances"
+        },
+        {
+          "title": "Kitchen And Dining Appliances",
+          "url": "kitchen-dining-appliances"
+        },
+        {
+          "title": "Kitchen Utilities And Tools",
+          "url": "utilities-tools"
+        },
+        {
+          "title": "Kitchen Utensils And Cookware",
+          "url": "utensils-cookware"
+        },
+        {
+          "title": "Other Electronics Appliances",
+          "url": "other-electronic-appliances"
+        }
+      ],
+      "url": "home-kitchen"
+    },
+    {
+      "stories": "https://shopnow.hindustantimes.com/amazon-sale/sitemap/2023.xml",
+      "title": "Amazon Sale",
+      "subcategories": [
+        {
+          "title": "Fashion Sale",
+          "url": "fashion-sale"
+        },
+        {
+          "title": "Electronics Sale",
+          "url": "electronics-sale"
+        },
+        {
+          "title": "Health And Beauty Sale",
+          "url": "health-and-beauty-sale"
+        },
+        {
+          "title": "Pet Supplies Sale",
+          "url": "pet-supplies-sale"
+        },
+        {
+          "title": "Home Kitchen Sale",
+          "url": "home-kitchen-sale"
+        }
+      ],
+      "url": "amazon-sale"
+    }
+  ],
+  "year": 2023
+}

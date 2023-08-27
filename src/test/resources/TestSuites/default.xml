@@ -9,7 +9,7 @@
     <parameter name="executionType" value="sanity"/>
     <parameter name="platformName" value="web"/>
     <parameter name="browser" value="chrome"/>
-    <parameter name="browserMode" value="headless"/>
+    <parameter name="browserMode" value="normal"/>
     <parameter name="isBrowserStack" value="false"/>
     <parameter name="isAppium" value="false"/>
     <parameter name="capabilitiesJson" value="windows10_chrome"/>
@@ -17,7 +17,6 @@
     <parameter name="googleSheetFlag" value="false"/>
     <test name="Test">
         <classes>
-            <class name="org.shopnow.tests.Header"/>
             <class name="org.shopnow.tests.HomePage"/>
         </classes>
     </test>

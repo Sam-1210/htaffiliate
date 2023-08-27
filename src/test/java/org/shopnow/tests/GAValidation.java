@@ -14,7 +14,6 @@ import org.openqa.selenium.logging.LogType;
 import org.openqa.selenium.logging.LoggingPreferences;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import org.shopnow.utility.Sitemap;
 import org.shopnow.structures.Filter;
 import org.shopnow.structures.ProdElement;
 import org.shopnow.utility.GoogleSheetUtil;
@@ -159,7 +158,7 @@ public class GAValidation {
                     batches[i] = new Object[]{String.format("Testcase%d",i+1), table.get(i).get(0), elms};
                 }
             } else if(XMLFlag) {
-                Logger.Heading("Initialising using XML");
+                /*Logger.Heading("Initialising using XML");
                 ArrayList<String> urls = new ArrayList<>(Sitemap.GetUsingXML(driver, XML_URL));
                 Logger.Log("Done Initialising");
                 for (int i = 0; i < urls.size(); i++) {
@@ -173,7 +172,7 @@ public class GAValidation {
                     elms.addAll(ProdElement.Get(driver, "//div[@class='offercard']", paramsFilter));
 
                     batches[i] = new Object[]{urls.get(i), elms};
-                }
+                }*/
             }
             else {
                 /*ArrayList<Sitemap.SitemapItem> sitemapItems = Sitemap.Get(driver);

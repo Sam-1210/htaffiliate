@@ -2,6 +2,7 @@ package org.shopnow.base;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.PageFactory;
+import org.shopnow.enums.POM;
 import org.shopnow.structures.ApplicationProperties;
 import org.shopnow.utility.DriverManager;
 import org.shopnow.utility.Logger;
@@ -15,14 +16,15 @@ public class BasePage {
     protected WebDriver driver;
     public BasePage() {
         driver = DriverManager.getInstance().getDriver();
+        driver.get(ApplicationProperties.getInstance().getEnvironment().getURL());
         PageFactory.initElements(driver, this);
     }
 
-    public static Object getInstanceOf(Class<?> clazz, Object... initArgs) {
-        return getPageClassInstance(clazz, initArgs);
+    public static Object getInstanceOf(Class<?> clazz, POM pom, Object... initArgs) {
+        return getClassInstance(clazz, pom, initArgs);
     }
 
-    private static Object getPageClassInstance(Class<?> clazz, Object... initArgs) {
+    private static Object getClassInstance(Class<?> clazz, POM pom, Object... initArgs) {
         String pageClassName = clazz.getSimpleName();
         if (pageClassName.toLowerCase().startsWith("common"))
             pageClassName = pageClassName.substring(6).trim();
@@ -30,9 +32,9 @@ public class BasePage {
             pageClassName = pageClassName.substring(8).trim();
 
         pageClassName = switch (ApplicationProperties.getInstance().getPlatform()) {
-            case WEB -> "org.shopnow.pom.pages.web." + pageClassName;
-            case MWEB -> "org.shopnow.pom.pages.mweb." + pageClassName;
-            case AMP -> "org.shopnow.pom.pages.amp." + pageClassName;
+            case WEB -> "org.shopnow.pom." + pom.getName() + ".web." + pageClassName;
+            case MWEB -> "org.shopnow.pom." + pom.getName() + ".mweb." + pageClassName;
+            case AMP -> "org.shopnow.pom." + pom.getName() + ".amp." + pageClassName;
         };
 
         try {
@@ -45,5 +47,13 @@ public class BasePage {
             Logger.Error("Unable to instantiate class [" + pageClassName + "] :: " + e.getMessage());
         }
         return null;
+    }
+
+    public static Object getPageClassInstance(Class<?> clazz, Object... initArgs) {
+        return getClassInstance(clazz, POM.PAGES, initArgs);
+    }
+
+    public static Object getComponentClassInstance(Class<?> clazz, Object... initArgs) {
+        return getClassInstance(clazz, POM.COMPONENTS, initArgs);
     }
 }

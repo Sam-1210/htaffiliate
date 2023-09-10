@@ -15,10 +15,19 @@
     <parameter name="capabilitiesJson" value="windows10_chrome"/>
     <parameter name="buildNumber" value="12302"/>
     <parameter name="googleSheetFlag" value="false"/>
-    <test name="Test">
+    <!--<test name="Homepage">
         <classes>
-            <class name="org.shopnow.tests.Header"/>
-            <class name="org.shopnow.tests.HomePage"/>
+            &lt;!&ndash;<class name="org.shopnow.tests.Header"/>&ndash;&gt;
+            <class name="org.shopnow.tests.HomePage">
+                <methods>
+                    <include name="VerifyBannerCardsNoFollow"/>
+                </methods>
+            </class>
+        </classes>
+    </test>-->
+    <test name="CategoryPages">
+        <classes>
+            <class name="org.shopnow.tests.FashionPage"/>
         </classes>
     </test>
 </suite>

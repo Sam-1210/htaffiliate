@@ -6,6 +6,7 @@ import org.shopnow.enums.POM;
 import org.shopnow.structures.ApplicationProperties;
 import org.shopnow.utility.DriverManager;
 import org.shopnow.utility.Logger;
+import org.shopnow.utility.TabHelper;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -14,9 +15,11 @@ import java.lang.reflect.Method;
 public class BasePage {
     protected static final ApplicationProperties applicationProperties = ApplicationProperties.getInstance();
     protected WebDriver driver;
+    protected TabHelper tabHelper;
     public BasePage() {
         driver = DriverManager.getInstance().getDriver();
         driver.get(ApplicationProperties.getInstance().getEnvironment().getURL());
+        tabHelper = TabHelper.getInstance(driver);
         PageFactory.initElements(driver, this);
     }
 
@@ -55,5 +58,23 @@ public class BasePage {
 
     public static Object getComponentClassInstance(Class<?> clazz, Object... initArgs) {
         return getClassInstance(clazz, POM.COMPONENTS, initArgs);
+    }
+
+    public boolean runAll() {
+        boolean overallResult = true;
+        Class<?> clazz = this.getClass();
+        Method[] methods = clazz.getMethods();
+        for (Method method : methods) {
+            if (method.getName().startsWith("check")) {
+                try {
+                    boolean methodResult = (boolean) method.invoke(this);
+                    overallResult &= methodResult;
+                } catch (Exception e) {
+                    Logger.Except(e);
+                    overallResult = false;
+                }
+            }
+        }
+        return overallResult;
     }
 }

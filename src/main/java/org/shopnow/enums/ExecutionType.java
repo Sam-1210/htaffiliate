@@ -12,4 +12,12 @@ public enum ExecutionType {
     public String getName() {
         return this.name;
     }
+
+    public boolean equals(ExecutionType other) {
+        return other.name.equals(this.name);
+    }
+
+    public boolean equals(String other) {
+        return this.name.equalsIgnoreCase(other);
+    }
 }

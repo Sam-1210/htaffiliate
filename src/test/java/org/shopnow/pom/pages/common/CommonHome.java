@@ -138,9 +138,9 @@ public class CommonHome extends BasePage {
         return result;
     }
 
-    public boolean checkNumberOfStoryCategories() {
+    public boolean checkNumberOfStoryCategories(int expected) {
         driver.get(URL);
-        return driver.findElements(ListStoryCategoryContainers).size() == 7;
+        return driver.findElements(ListStoryCategoryContainers).size() == expected;
     }
 
     public boolean checkStoryCategoryTitles() {

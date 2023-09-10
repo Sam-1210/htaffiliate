@@ -14,20 +14,18 @@
     <parameter name="isAppium" value="false"/>
     <parameter name="capabilitiesJson" value="windows10_chrome"/>
     <parameter name="buildNumber" value="12302"/>
-    <parameter name="googleSheetFlag" value="false"/>
-    <!--<test name="Homepage">
+    <parameter name="googleSheetFlag" value="true"/>
+    <test name="Homepage">
         <classes>
-            &lt;!&ndash;<class name="org.shopnow.tests.Header"/>&ndash;&gt;
+            <!--<class name="org.shopnow.tests.Header"/>-->
             <class name="org.shopnow.tests.HomePage">
-                <methods>
-                    <include name="VerifyBannerCardsNoFollow"/>
-                </methods>
+
             </class>
         </classes>
-    </test>-->
-    <test name="CategoryPages">
+    </test>
+    <!--<test name="CategoryPages">
         <classes>
             <class name="org.shopnow.tests.FashionPage"/>
         </classes>
-    </test>
+    </test>-->
 </suite>

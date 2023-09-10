@@ -1,16 +1,25 @@
 package org.shopnow.base;
 
+import org.apache.poi.ss.formula.functions.T;
+import org.shopnow.annotations.TestDetails;
 import org.shopnow.enums.*;
 import org.shopnow.enums.SupportedBrowsers;
 import org.shopnow.structures.ApplicationProperties;
 import org.shopnow.utility.DriverManager;
 import org.shopnow.utility.Logger;
+import org.shopnow.utility.TestDataManager;
 import org.testng.*;
 import org.testng.annotations.*;
+
+import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
 
 @Listeners({org.testng.reporters.XMLReporter.class})
 public class BaseTest implements IHookable {
     protected final ApplicationProperties applicationProperties = ApplicationProperties.getInstance();
+    protected TestDataManager testDataManager;
+    protected Map<String, String> testResults = new HashMap<>();
 
     @BeforeSuite
     @Parameters({
@@ -62,6 +71,11 @@ public class BaseTest implements IHookable {
         }
     }
 
+    @BeforeClass
+    public void SetupClass() {
+        testDataManager = new TestDataManager(this.getClass());
+    }
+
     @Override
     public void run(IHookCallBack callBack, ITestResult testResult) {
         Logger.Heading("Running:  " + testResult.getName());
@@ -69,8 +83,70 @@ public class BaseTest implements IHookable {
         Logger.Heading("Finished: " + testResult.getName());
     }
 
+    @AfterMethod
+    public void AfterTest(ITestResult result) {
+        try {
+            String className = this.getClass().getName();
+            String methodName = result.getMethod().getMethodName();
+            String status = switch (result.getStatus()) {
+                case ITestResult.SUCCESS -> "PASSED";
+                case ITestResult.FAILURE -> "FAILED";
+                case ITestResult.SKIP -> "SKIPPED";
+                default -> "" ;
+            };
+
+            Class<?> clazz = Class.forName(className);
+            Method method = clazz.getDeclaredMethod(methodName);
+
+            if (method.isAnnotationPresent(TestDetails.class)) {
+                TestDetails testCaseIDAnnotation = method.getAnnotation(TestDetails.class);
+                String testcaseID = testCaseIDAnnotation.testcaseID();
+
+                testResults.put(testcaseID, status);
+            }
+        } catch (ClassNotFoundException | NoSuchMethodException e) {
+            Logger.Except(e);
+        }
+    }
+
+    @AfterClass
+    public void AfterClass() {
+        testDataManager.WriteResults(testResults);
+    }
+
     @AfterSuite
     public void tearDown() {
         DriverManager.QuitAll();
+    }
+
+
+    /**
+     * Can be called only from inside method which have TestDetails annotation
+     * @return
+     */
+    protected String GetTestData() {
+        String data = null;
+
+        StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
+        if (stackTrace.length >= 3) {
+            StackTraceElement testMethodElement = stackTrace[2];
+            try {
+                String className = testMethodElement.getClassName();
+                String methodName = testMethodElement.getMethodName();
+
+                Class<?> clazz = Class.forName(className);
+                Method method = clazz.getDeclaredMethod(methodName);
+
+                if (method.isAnnotationPresent(TestDetails.class)) {
+                    TestDetails testCaseIDAnnotation = method.getAnnotation(TestDetails.class);
+                    String testcaseID = testCaseIDAnnotation.testcaseID();
+                    return testDataManager.GetDataForTestCase(testcaseID);
+                }
+            } catch (ClassNotFoundException | NoSuchMethodException e) {
+                Logger.Except(e);
+            }
+        }
+
+        return data;
     }
 }

@@ -1,6 +1,6 @@
 package org.shopnow.listeners;
 
-import org.shopnow.annotations.TestFilter;
+import org.shopnow.annotations.TestDetails;
 import org.shopnow.enums.Environment;
 import org.shopnow.enums.ExecutionType;
 import org.shopnow.enums.Platforms;
@@ -10,12 +10,10 @@ import org.testng.ITestResult;
         import org.testng.SkipException;
         import org.testng.TestListenerAdapter;
 
-import java.util.Arrays;
-
 public class TestListener extends TestListenerAdapter {
     @Override
     public void onTestStart(ITestResult result) {
-        TestFilter annotation = result.getMethod().getConstructorOrMethod().getMethod().getAnnotation(TestFilter.class);
+        TestDetails annotation = result.getMethod().getConstructorOrMethod().getMethod().getAnnotation(TestDetails.class);
         String MethodName = result.getMethod().getMethodName();
         if (annotation != null) {
             Platforms currentPlatform = ApplicationProperties.getInstance().getPlatform();

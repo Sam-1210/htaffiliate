@@ -8,7 +8,8 @@ import java.lang.annotation.*;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-public @interface TestFilter {
+public @interface TestDetails {
+    String testcaseID();
     Platforms[] platform() default {};
     Environment[] environment() default {};
     ExecutionType executionType() default ExecutionType.SANITY;

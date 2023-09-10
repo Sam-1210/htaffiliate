@@ -1,6 +1,6 @@
 package org.shopnow.tests;
 
-import org.shopnow.annotations.TestFilter;
+import org.shopnow.annotations.TestDetails;
 import org.shopnow.base.BasePage;
 import org.shopnow.base.BaseTest;
 import org.shopnow.enums.ExecutionType;
@@ -21,7 +21,7 @@ public class Header extends BaseTest {
         }
     }
 
-    @TestFilter(platform = {Platforms.WEB, Platforms.MWEB, Platforms.AMP},
+    @TestDetails(testcaseID = "ATC1", platform = {Platforms.WEB, Platforms.MWEB, Platforms.AMP},
             executionType = ExecutionType.SANITY)
     @Test
     public void VerifyNumberOfStoryCategories() {
@@ -29,7 +29,7 @@ public class Header extends BaseTest {
                 "Number of Categories Shown are Not 7");
     }
 
-    @TestFilter(platform = {Platforms.WEB, Platforms.MWEB, Platforms.AMP},
+    @TestDetails(testcaseID = "ATC2", platform = {Platforms.WEB, Platforms.MWEB, Platforms.AMP},
             executionType = ExecutionType.SANITY)
     @Test
     public void VerifyNumberOfSubcategoriesInCategories() {

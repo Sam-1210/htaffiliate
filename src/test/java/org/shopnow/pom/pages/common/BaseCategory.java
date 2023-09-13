@@ -34,7 +34,6 @@ public class BaseCategory extends BasePage {
         } catch (Exception e) {
             Logger.Except(e);
         }
-
     }
 
     /**

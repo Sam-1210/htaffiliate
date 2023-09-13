@@ -4,12 +4,15 @@ import org.json.JSONObject;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.shopnow.enums.Environment;
 import org.shopnow.utility.DriverManager;
 import org.shopnow.utility.Logger;
 
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Sitemap {
     public static JSONObject Get(boolean nullOnResourceFailure) {
@@ -83,5 +86,29 @@ public class Sitemap {
         }
 
         return dynSitemap;
+    }
+
+    public static List<Map<String, String>> GetFlattenedSitemap(JSONObject sitemap, Environment env) {
+        List<Map<String, String>> flattened = new ArrayList<>();
+        String baseURL = env.getURL();
+
+        for(Object item: sitemap.getJSONArray("data")) {
+            JSONObject jItem = (JSONObject) item;
+            String categoryURL = baseURL + "/" + jItem.getString("url");
+            Map<String, String> entry = new HashMap<>();
+            entry.put("url", categoryURL);
+            entry.put("title", jItem.getString("title"));
+            flattened.add(new HashMap<>(entry));
+            entry.clear();
+            for(Object sitem : jItem.getJSONArray("subcategories")) {
+                JSONObject sJitem = (JSONObject) sitem;
+                entry.put("url", categoryURL + "/" + sJitem.getString("url"));
+                entry.put("title", sJitem.getString("title"));
+                flattened.add(new HashMap<>(entry));
+                entry.clear();
+            }
+        }
+
+        return flattened;
     }
 }

@@ -1,5 +1,6 @@
 package org.shopnow.pom.components.web;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
@@ -8,6 +9,7 @@ import org.shopnow.structures.Sitemap;
 import org.shopnow.utility.DriverHelper;
 import org.shopnow.utility.Logger;
 
+import java.time.Duration;
 import java.util.List;
 
 public class Header extends CommonHeader {
@@ -24,11 +26,21 @@ public class Header extends CommonHeader {
     public static final By HeaderNavigationContainer = By.cssSelector("ul.head-menu-all.container");
 
     // relative
+    public static final By _Link = By.tagName("a");
     public static final By _ListNavigateItems = By.cssSelector("li.category-menu");
-    public static final By _ListNavigateItemsLink = By.cssSelector("a");
     public static final By _ListSubcategoryItems = By.cssSelector("ul.subcategory-menu > li");
-    public static final By _ListSubcategoryForCategoryLinks = By.cssSelector("a");
-    private static final JSONObject sitemap = Sitemap.Get(true);
+
+
+    @Override
+    public boolean checkHeaderLogo() {
+        return true;
+    }
+
+    @Override
+    public boolean checkLoginButton() { return true; }
+
+    @Override
+    public boolean checkLogoutButton() { return true; }
 
 
     @Override
@@ -71,7 +83,59 @@ public class Header extends CommonHeader {
     }
 
     @Override
-    public boolean checkHeadings() { return true; }
+    public boolean checkHeadings() {
+        boolean result = true;
+        try {
+            List<WebElement> categories = driver.findElement(HeaderNavigationContainer).findElements(_ListNavigateItems);
+            JSONArray jData = sitemap.getJSONArray("data");
+            for(int i = 0; i < categories.size(); i++) {
+                JSONObject categoryData = (JSONObject) jData.get(i);
+                String actual = categories.get(i).findElement(_Link).getText();
+                String expected = categoryData.getString("title");
+                boolean match = expected.equals(actual);
+
+                if(!match) Logger.Log("Category Headings Mismatch | Expected: %s, Actual: %s",
+                        expected, actual);
+
+                result &= match;
+            }
+        } catch (Exception e) {
+            Logger.Except(e);
+            result = false;
+        }
+
+        return result;
+    }
+
+    @Override
+    public boolean checkSubHeadings() {
+        boolean result = true;
+        try {
+            List<WebElement> categories = driver.findElement(HeaderNavigationContainer).findElements(_ListNavigateItems);
+            JSONArray jData = sitemap.getJSONArray("data");
+            for(int i = 0; i < categories.size(); i++) {
+                List<WebElement> subcategories = categories.get(i).findElements(_ListSubcategoryItems);
+                JSONArray subcategoryData = ((JSONObject) jData.get(i)).getJSONArray("subcategories");
+                DriverHelper.MouseOver(driver, categories.get(i));
+                for(int j = 0; j < subcategories.size(); j++) {
+                    DriverHelper.ExplicitWaitForVisibility(driver, Duration.ofSeconds(1), subcategories.get(j));
+                    String actual = subcategories.get(j).findElement(_Link).getText();
+                    String expected = ((JSONObject)subcategoryData.get(j)).getString("title");
+                    boolean match = expected.equals(actual);
+
+                    if(!match) Logger.Log("Subcategory Headings Mismatch | Category: %s, Expected: %s, Actual: %s",
+                            categories.get(i).getText(), expected, actual);
+
+                    result &= match;
+                }
+            }
+        } catch (Exception e) {
+            Logger.Except(e);
+            result = false;
+        }
+
+        return result;
+    }
 
     @Override
     public boolean checkNavigation() { return true; }

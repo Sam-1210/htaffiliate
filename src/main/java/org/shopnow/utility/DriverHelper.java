@@ -17,6 +17,14 @@ public class DriverHelper {
         ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView();", driver.findElement(element));
     }
 
+    public static void ClickWithJS(WebDriver driver, WebElement element) {
+        ((JavascriptExecutor) driver).executeScript("arguments[0].click();", element);
+    }
+
+    public static void ClickWithJS(WebDriver driver, By element) {
+        ((JavascriptExecutor) driver).executeScript("arguments[0].click();", driver.findElement(element));
+    }
+
     public static void ScrollBy(WebDriver driver, int x, int y) {
         ((JavascriptExecutor) driver).executeScript(String.format("window.scrollBy(%d,%d)", x, y));
     }

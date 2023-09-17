@@ -86,7 +86,6 @@ public class BaseTest implements IHookable {
     @AfterMethod
     public void AfterTest(ITestResult result) {
         try {
-            String className = this.getClass().getName();
             String methodName = result.getMethod().getMethodName();
             String status = switch (result.getStatus()) {
                 case ITestResult.SUCCESS -> "PASSED";
@@ -95,16 +94,8 @@ public class BaseTest implements IHookable {
                 default -> "" ;
             };
 
-            Class<?> clazz = Class.forName(className);
-            Method method = clazz.getDeclaredMethod(methodName);
-
-            if (method.isAnnotationPresent(TestDetails.class)) {
-                TestDetails testCaseIDAnnotation = method.getAnnotation(TestDetails.class);
-                String testcaseID = testCaseIDAnnotation.testcaseID();
-
-                testResults.put(testcaseID, status);
-            }
-        } catch (ClassNotFoundException | NoSuchMethodException e) {
+            testResults.put(methodName, status);
+        } catch (Exception e) {
             Logger.Except(e);
         }
     }
@@ -119,34 +110,18 @@ public class BaseTest implements IHookable {
         DriverManager.QuitAll();
     }
 
-
-    /**
-     * Can be called only from inside method which have TestDetails annotation
-     * @return
-     */
     protected String GetTestData() {
-        String data = null;
-
         StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
         if (stackTrace.length >= 3) {
             StackTraceElement testMethodElement = stackTrace[2];
             try {
-                String className = testMethodElement.getClassName();
                 String methodName = testMethodElement.getMethodName();
-
-                Class<?> clazz = Class.forName(className);
-                Method method = clazz.getDeclaredMethod(methodName);
-
-                if (method.isAnnotationPresent(TestDetails.class)) {
-                    TestDetails testCaseIDAnnotation = method.getAnnotation(TestDetails.class);
-                    String testcaseID = testCaseIDAnnotation.testcaseID();
-                    return testDataManager.GetDataForTestCase(testcaseID);
-                }
-            } catch (ClassNotFoundException | NoSuchMethodException e) {
+                return testDataManager.GetDataForTestCase(methodName);
+            } catch (Exception e) {
                 Logger.Except(e);
             }
         }
 
-        return data;
+        return null;
     }
 }

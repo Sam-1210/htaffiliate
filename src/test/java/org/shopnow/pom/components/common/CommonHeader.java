@@ -4,12 +4,13 @@ import org.json.JSONObject;
 import org.openqa.selenium.By;
 import org.shopnow.base.BasePage;
 import org.shopnow.structures.Sitemap;
+import org.shopnow.utility.DriverHelper;
 import org.shopnow.utility.Logger;
 
 import java.util.List;
 import java.util.Map;
 
-public class CommonHeader extends BasePage {
+public abstract class CommonHeader extends BasePage {
     /**
      * naming conventions for locators
      * List* returns list
@@ -26,11 +27,13 @@ public class CommonHeader extends BasePage {
     protected final By HeaderLogo = By.cssSelector("div.logo > a > img");
 
     // relative
+    public static final By _Link = By.tagName("a");
 
     /**
      * mandatory test | Platform Specifics
      * make abstract
      */
+    public abstract boolean checkNavigation();
 
     /**
      * optional tests | Platform Specific
@@ -44,12 +47,13 @@ public class CommonHeader extends BasePage {
     public boolean checkHeadings() { return true; }
     public boolean checkSubHeadings() { return true; }
 
-    public boolean checkNavigation() { return true; }
+
 
     /**
      * default, common tests for all
      */
     public boolean checkHeaderLogo() {
+        String homeURL = applicationProperties.getEnvironment().getURL();
         boolean result = true;
         for(Map<String, String> entry : flattenedSitemap) {
             driver.get(entry.get("url"));
@@ -57,8 +61,13 @@ public class CommonHeader extends BasePage {
             match &= driver.findElement(HeaderLogo).isDisplayed();
             if(!match) Logger.Log("Header logo not displayed on page: %s", entry.get("url"));
             result &= match;
+
+            DriverHelper.ClickWithJS(driver, HeaderLogo);
+            match = driver.getCurrentUrl().equalsIgnoreCase(homeURL);
+            if(!match) Logger.Log("Header Logo Click Redirection is Invalid on page: %s, url:%s", entry.get("title"), entry.get("url"));
+            result &= match;
         }
 
-        return true;
+        return result;
     }
 }

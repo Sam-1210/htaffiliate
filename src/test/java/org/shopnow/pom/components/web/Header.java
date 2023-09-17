@@ -26,7 +26,6 @@ public class Header extends CommonHeader {
     public static final By HeaderNavigationContainer = By.cssSelector("ul.head-menu-all.container");
 
     // relative
-    public static final By _Link = By.tagName("a");
     public static final By _ListNavigateItems = By.cssSelector("li.category-menu");
     public static final By _ListSubcategoryItems = By.cssSelector("ul.subcategory-menu > li");
 
@@ -138,5 +137,41 @@ public class Header extends CommonHeader {
     }
 
     @Override
-    public boolean checkNavigation() { return true; }
+    public boolean checkNavigation() {
+        boolean result = true;
+        try {
+            JSONArray jData = sitemap.getJSONArray("data");
+            String rootURL = applicationProperties.getEnvironment().getURL();
+            for(int i = 0; i < jData.length(); i++) {
+                String categoryURL = rootURL + "/" + ((JSONObject)jData.get(i)).getString("url");
+                DriverHelper.ClickWithJS(driver, By.cssSelector(String.format("li.category-menu:nth-child(%d) > a", i+1)));
+
+                if(!driver.getCurrentUrl().equalsIgnoreCase(categoryURL)) {
+                    result = false;
+                    Logger.Log("Click Failed For Category %s, Link: %s",
+                            ((JSONObject) jData.get(i)).getString("title"), categoryURL);
+                }
+
+                JSONArray subcategoryData = ((JSONObject) jData.get(i)).getJSONArray("subcategories");
+
+                for(int j = 0; j < subcategoryData.length(); j++) {
+
+                    String subcategoryURL = categoryURL + "/" + ((JSONObject)subcategoryData.get(j)).getString("url");
+                    DriverHelper.ClickWithJS(driver, By.cssSelector(String.format("li.category-menu:nth-child(%d)  ul.subcategory-menu > li:nth-child(%d) > a", i+1, j+1)));
+
+                    if(!driver.getCurrentUrl().equalsIgnoreCase(subcategoryURL)) {
+                        result = false;
+                        Logger.Log("Click Failed For Subcategory %s of Category: %s, Link: %s",
+                                ((JSONObject) subcategoryData.get(j)).getString("title"),
+                                ((JSONObject) jData.get(i)).getString("title"), subcategoryURL);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            Logger.Except(e);
+            result = false;
+        }
+
+        return result;
+    }
 }

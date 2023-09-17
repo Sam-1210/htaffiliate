@@ -22,7 +22,7 @@ public class Header extends BaseTest {
         }
     }
 
-    @TestDetails(testcaseID = "ATC1", platform = {Platforms.WEB, Platforms.MWEB, Platforms.AMP},
+    @TestDetails(testcaseID = "T1", platform = {Platforms.WEB, Platforms.MWEB, Platforms.AMP},
             executionType = ExecutionType.SANITY)
     @Test
     public void VerifyHeaderLogo() {
@@ -30,7 +30,7 @@ public class Header extends BaseTest {
                 "Either header logo is not visible or not clickable | check logs above");
     }
 
-    @TestDetails(testcaseID = "ATC4", platform = {Platforms.WEB, Platforms.MWEB, Platforms.AMP},
+    @TestDetails(testcaseID = "T4", platform = {Platforms.WEB, Platforms.MWEB, Platforms.AMP},
             executionType = ExecutionType.SANITY)
     @Test
     public void VerifyNumberOfStoryCategories() {
@@ -38,7 +38,7 @@ public class Header extends BaseTest {
                 "Number of Categories Shown are Not 7");
     }
 
-    @TestDetails(testcaseID = "ATC5", platform = {Platforms.WEB, Platforms.MWEB, Platforms.AMP},
+    @TestDetails(testcaseID = "T5", platform = {Platforms.WEB, Platforms.MWEB, Platforms.AMP},
             executionType = ExecutionType.SANITY)
     @Test
     public void VerifyHeadings() {
@@ -46,7 +46,7 @@ public class Header extends BaseTest {
                 "Atleast one of the heading mismatches | check logs above");
     }
 
-    @TestDetails(testcaseID = "ATC7", platform = {Platforms.WEB, Platforms.MWEB, Platforms.AMP},
+    @TestDetails(testcaseID = "T7", platform = {Platforms.WEB, Platforms.MWEB, Platforms.AMP},
             executionType = ExecutionType.SANITY)
     @Test
     public void VerifyNumberOfSubcategoriesInCategories() {
@@ -54,11 +54,19 @@ public class Header extends BaseTest {
                 "Atleast one category contains invalid number of subcategories | check logs above");
     }
 
-    @TestDetails(testcaseID = "ATC8", platform = {Platforms.WEB, Platforms.MWEB, Platforms.AMP},
+    @TestDetails(testcaseID = "T8", platform = {Platforms.WEB, Platforms.MWEB, Platforms.AMP},
             executionType = ExecutionType.SANITY)
     @Test
     public void VerifySubHeadings() {
         Assert.assertTrue(header.checkSubHeadings(),
                 "Atleast one of the subcategory mismatches | check logs above");
+    }
+
+    @TestDetails(testcaseID = "T9", platform = {Platforms.WEB, Platforms.MWEB, Platforms.AMP},
+            executionType = ExecutionType.SANITY)
+    @Test
+    public void VerifyNavigation() {
+        Assert.assertTrue(header.checkNavigation(),
+                "Navigation issue | check logs above");
     }
 }

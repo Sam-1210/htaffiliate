@@ -9,7 +9,7 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 public @interface TestDetails {
-    String testcaseID();
+    String testcaseID() default "";
     Platforms[] platform() default {};
     Environment[] environment() default {};
     ExecutionType executionType() default ExecutionType.SANITY;

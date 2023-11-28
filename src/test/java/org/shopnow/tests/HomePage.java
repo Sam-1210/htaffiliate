@@ -82,7 +82,7 @@ public class HomePage extends BaseTest {
     @TestDetails(testcaseID = "T9", executionType = ExecutionType.SANITY)
     @Test
     public void VerifyNumberOfStoryCategories() {
-        String expected = GetTestData();
+        String expected = GetTestDataAsString();
 
         Assert.assertTrue(homePage.checkNumberOfStoryCategories(Integer.parseInt(expected)),
                 "Number of Story Categories Shown are Not 7");

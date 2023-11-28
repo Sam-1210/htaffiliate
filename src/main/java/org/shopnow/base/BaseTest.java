@@ -5,6 +5,7 @@ import org.shopnow.annotations.TestDetails;
 import org.shopnow.enums.*;
 import org.shopnow.enums.SupportedBrowsers;
 import org.shopnow.structures.ApplicationProperties;
+import org.shopnow.structures.TestData;
 import org.shopnow.utility.DriverManager;
 import org.shopnow.utility.Logger;
 import org.shopnow.utility.TestDataManager;
@@ -87,11 +88,18 @@ public class BaseTest implements IHookable {
     public void AfterTest(ITestResult result) {
         try {
             String methodName = result.getMethod().getMethodName();
-            String status = switch (result.getStatus()) {
-                case ITestResult.SUCCESS -> "PASSED";
-                case ITestResult.FAILURE -> "FAILED";
-                case ITestResult.SKIP -> "SKIPPED";
-                default -> "" ;
+            String status = "";
+
+            switch (result.getStatus()) {
+                case ITestResult.SUCCESS:
+                    status = "PASSED";
+                    break;
+                case ITestResult.FAILURE:
+                    status = "FAILED";
+                    break;
+                case ITestResult.SKIP:
+                    status = "SKIPPED";
+                    break;
             };
 
             testResults.put(methodName, status);
@@ -110,7 +118,7 @@ public class BaseTest implements IHookable {
         DriverManager.QuitAll();
     }
 
-    protected String GetTestData() {
+    protected String GetTestDataAsString(String MethodName) {
         StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
         if (stackTrace.length >= 3) {
             StackTraceElement testMethodElement = stackTrace[2];
@@ -123,5 +131,21 @@ public class BaseTest implements IHookable {
         }
 
         return null;
+    }
+
+    protected TestData GetTestData() {
+        StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
+
+        if (stackTrace.length >= 3) {
+            StackTraceElement testMethodElement = stackTrace[2];
+            try {
+                String methodName = testMethodElement.getMethodName();
+                return new TestData(testDataManager.GetDataForTestCase(methodName));
+            } catch (Exception e) {
+                Logger.Except(e);
+            }
+        }
+
+        return new TestData("");
     }
 }

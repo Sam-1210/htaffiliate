@@ -2,7 +2,7 @@ package org.shopnow.enums;
 
 public enum Environment {
     QA("qa"),
-    PRE_PROD("preprod"),
+    PREPROD("preprod"),
     PROD("prod");
 
     final String name;
@@ -21,7 +21,7 @@ public enum Environment {
             case QA:
                 URL = "http://ht-affiliate-qa.hindustantimes.com";
                 break;
-            case PRE_PROD:
+            case PREPROD:
                 URL = "http://ht-affiliate-preprod.hindustantimes.com";
                 break;
             case PROD:

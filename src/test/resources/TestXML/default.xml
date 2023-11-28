@@ -5,22 +5,27 @@
         <listener class-name="org.shopnow.listeners.TestListener"/>
     </listeners>
 
-    <parameter name="environment" value="prod"/>
+    <parameter name="environment" value="preprod"/>
     <parameter name="executionType" value="sanity"/>
     <parameter name="platformName" value="web"/>
     <parameter name="browser" value="chrome"/>
-    <parameter name="browserMode" value="headless"/>
+    <parameter name="browserMode" value="normal"/>
     <parameter name="isBrowserStack" value="false"/>
     <parameter name="isAppium" value="false"/>
     <parameter name="capabilitiesJson" value="windows10_chrome"/>
     <parameter name="buildNumber" value="12302"/>
     <parameter name="googleSheetFlag" value="true"/>
-    <test name="Globals">
+    <test name="AffiliateRevenue">
         <classes>
-            <!--<class name="org.shopnow.tests.Header"/>-->
-            <class name="org.shopnow.tests.Footer"/>
+            <class name="org.shopnow.tests.AffiliateRevenue"></class>
         </classes>
     </test>
+    <!--<test name="Globals">
+        <classes>
+            <class name="org.shopnow.tests.Header"/>
+            &lt;!&ndash;<class name="org.shopnow.tests.Footer"/>&ndash;&gt;
+        </classes>
+    </test>-->
     <!--<test name="Homepage">
         <classes>
             <class name="org.shopnow.tests.HomePage"/>

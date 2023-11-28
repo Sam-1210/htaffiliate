@@ -49,13 +49,17 @@ public class TestDataManager {
 
     public void WriteResults(Map<String, String> testResults) {
         String timestamp = timestampFormat.format(new Date());
-        if(SheetData.get(META_ROW).size() >= TIME_COLUMN + 1) {
-            SheetData.get(META_ROW).set(TIME_COLUMN, timestamp);
+        if(META_ROW < SheetData.size())
+        {
+            if(SheetData.get(META_ROW).size() >= TIME_COLUMN + 1) {
+                SheetData.get(META_ROW).set(TIME_COLUMN, timestamp);
+            }
+            else {
+                while(SheetData.get(META_ROW).size() < TIME_COLUMN) SheetData.get(META_ROW).add("");
+                SheetData.get(META_ROW).add(timestamp);
+            }
         }
-        else {
-            while(SheetData.get(META_ROW).size() < TIME_COLUMN) SheetData.get(META_ROW).add("");
-            SheetData.get(META_ROW).add(timestamp);
-        }
+
 
         for(int i = TESTCASE_FIRST_ROW; i < SheetData.size(); i++) {
             String testResult = testResults.get(SheetData.get(i).get(TESGNGMETHOD_COLUMN).toString());
@@ -71,7 +75,10 @@ public class TestDataManager {
         }
 
         try {
-            GoogleSheetUtil.getInstance().updateSheet(googleSpreadsheetID, TEST_CASE_RANGE, SheetData);
+            if(ApplicationProperties.getInstance().isGoogleSheet())
+            {
+                GoogleSheetUtil.getInstance().updateSheet(googleSpreadsheetID, TEST_CASE_RANGE, SheetData);
+            }
         } catch (Exception e) {
             Logger.Except(e);
         }

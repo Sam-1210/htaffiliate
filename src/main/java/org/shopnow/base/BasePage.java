@@ -34,10 +34,16 @@ public class BasePage {
         else if (pageClassName.toLowerCase().startsWith("abstract"))
             pageClassName = pageClassName.substring(8).trim();
 
-        pageClassName = switch (ApplicationProperties.getInstance().getPlatform()) {
-            case WEB -> "org.shopnow.pom." + pom.getName() + ".web." + pageClassName;
-            case MWEB -> "org.shopnow.pom." + pom.getName() + ".mweb." + pageClassName;
-            case AMP -> "org.shopnow.pom." + pom.getName() + ".amp." + pageClassName;
+        switch (ApplicationProperties.getInstance().getPlatform()) {
+            case WEB:
+                pageClassName =  "org.shopnow.pom." + pom.getName() + ".web." + pageClassName;
+                break;
+            case MWEB:
+                pageClassName = "org.shopnow.pom." + pom.getName() + ".mweb." + pageClassName;
+                break;
+            case AMP:
+                pageClassName = "org.shopnow.pom." + pom.getName() + ".amp." + pageClassName;
+                break;
         };
 
         try {

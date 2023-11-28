@@ -46,7 +46,16 @@ public class Logger {
     }
 
     public static void Except(Exception e) {
-        log(YELLOW,"EXCEPTION", e.toString());
+        StackTraceElement[] stackTrace = e.getStackTrace();
+        if (stackTrace.length > 0) {
+            StackTraceElement element = stackTrace[0]; // Get the first element for simplicity
+            String className = element.getClassName();
+            int lineNumber = element.getLineNumber();
+
+            log(YELLOW,"EXCEPTION", String.format("Class: %s, Line: %d Message: %s", className, lineNumber, e));
+        } else {
+            log(YELLOW,"EXCEPTION", e.toString());
+        }
     }
 
     public static void Except(Exception e, String format, Object... args) {

@@ -1,5 +1,6 @@
 package org.shopnow.structures;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -9,12 +10,11 @@ import org.shopnow.utility.DriverManager;
 import org.shopnow.utility.Logger;
 
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Sitemap {
+    private static JSONArray storiesInFeed;
+
     public static JSONObject Get(boolean nullOnResourceFailure) {
         return Get("Sitemap.json", 2023, nullOnResourceFailure);
     }
@@ -110,5 +110,38 @@ public class Sitemap {
         }
 
         return flattened;
+    }
+
+    public static JSONArray GetAllStoriesInFeed() {
+        if(storiesInFeed != null) return storiesInFeed;
+        storiesInFeed = new JSONArray();
+        JSONObject sitemap = Get(false);
+        WebDriver driver = DriverManager.getInstance().getDriver();
+        String BaseURL = ApplicationProperties.getInstance().getEnvironment().getURL();
+        String backup = driver.getCurrentUrl();
+
+        Logger.Heading("Fetching Story Feed");
+        try {
+            JSONArray sitemapEntries = sitemap.getJSONArray("data");
+            for(Object entry:sitemap.getJSONArray("data")) {
+                JSONObject jEntry = (JSONObject)entry;
+                Set<String> storiesSet = new HashSet<>();
+                driver.get(BaseURL + "/" + (String)jEntry.get("url"));
+                List<WebElement> anchors = driver.findElements(By.cssSelector("article.proArticle a"));
+                for(WebElement anchor:anchors) {
+                    storiesSet.add(anchor.getAttribute("href"));
+                }
+                JSONObject object = new JSONObject();
+                object.put("page", (String)jEntry.get("title"));
+                object.put("stories", new ArrayList<>(storiesSet));
+                storiesInFeed.put(object);
+            }
+        } catch (Exception e) {
+            Logger.Except(e);
+        } finally {
+            driver.get(backup);
+        }
+
+        return storiesInFeed;
     }
 }

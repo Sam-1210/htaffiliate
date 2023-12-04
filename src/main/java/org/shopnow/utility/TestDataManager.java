@@ -48,6 +48,7 @@ public class TestDataManager {
     }
 
     public void WriteResults(Map<String, String> testResults) {
+        if(SheetData == null) return;
         String timestamp = timestampFormat.format(new Date());
         if(META_ROW < SheetData.size())
         {

@@ -5,10 +5,17 @@ import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.shopnow.enums.PseudoSelector;
+import org.shopnow.structures.ApplicationProperties;
 
 import java.time.Duration;
 
 public class DriverHelper {
+    public static void NavigateTo(WebDriver driver, String URI) {
+        String finalURL = ApplicationProperties.getInstance().getEnvironment().getURL() + "/" + URI;
+        if(URI.charAt(0) == '/') finalURL = ApplicationProperties.getInstance().getEnvironment().getURL() + URI;
+        Logger.Log("Navigating to %s", finalURL);
+        driver.get(finalURL);
+    }
     public static void ScrollWithJS(WebDriver driver, WebElement element) {
         ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView();", element);
     }

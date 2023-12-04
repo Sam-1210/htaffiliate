@@ -1,5 +1,8 @@
 package org.shopnow.utility;
 
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.LinkedHashMap;
@@ -25,5 +28,21 @@ public class NetworkUtils {
             }
         }
         return params;
+    }
+
+    public static int URLStatus(String urlString) {
+        try {
+            URL url = new URL(urlString);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("GET");
+
+            int responseCode = connection.getResponseCode();
+            connection.disconnect();
+
+            return responseCode;
+        } catch (IOException e) {
+            Logger.Except(e);
+            return -1;
+        }
     }
 }

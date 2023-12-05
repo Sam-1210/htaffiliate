@@ -80,13 +80,82 @@ public class StoryPage extends BaseTest {
     @Test(dataProvider = "StoryProvider")
     public void VerifySocialMediaCountInFollowUs(TestData testData) {
         Assert.assertTrue(storyPage.checkSocialMediaCountInFollowUs(testData),
-                "Either follow us text is not shown or wrong, check logs");
+                "Some social media icons are not shown, check logs");
     }
 
     @TestDetails(testcaseID = "T8", executionType = ExecutionType.SANITY)
     @Test(dataProvider = "StoryProvider")
     public void VerifySocialMediaIconLoadedInFollowUs(TestData testData) {
         Assert.assertTrue(storyPage.checkSocialMediaIconLoadedInFollowUs(testData),
-                "Either follow us text is not shown or wrong, check logs");
+                "Some social media icons failed to load, check logs");
+    }
+
+    @TestDetails(testcaseID = "T9", executionType = ExecutionType.SANITY)
+    @Test(dataProvider = "StoryProvider")
+    public void VerifySocialMediaURLs(TestData testData) {
+        Assert.assertTrue(storyPage.checkSocialMediaURLs(testData),
+                "Some social media urls are invalid, check logs");
+    }
+
+    @TestDetails(testcaseID = "T10", executionType = ExecutionType.SANITY)
+    @Test(dataProvider = "StoryProvider")
+    public void VerifySocialMediaAlt(TestData testData) {
+        Assert.assertTrue(storyPage.checkSocialMediaAlt(testData),
+                "Some social media alt is wrong, check logs");
+    }
+
+    @TestDetails(testcaseID = "T11", executionType = ExecutionType.SANITY)
+    @Test(dataProvider = "StoryProvider")
+    public void VerifyShareIconLoaded(TestData testData) {
+        Assert.assertTrue(storyPage.checkShareIconLoaded(testData),
+                "Share Icon is not loaded");
+    }
+    @TestDetails(testcaseID = "T12", executionType = ExecutionType.SANITY)
+    @Test(dataProvider = "StoryProvider")
+    public void VerifyShareMenuOpenClose(TestData testData) {
+        Assert.assertTrue(storyPage.checkShareMenuOpenClose(testData),
+                "Share Menu Not working, check logs");
+    }
+
+    @TestDetails(testcaseID = "T13", executionType = ExecutionType.SANITY)
+    @Test(dataProvider = "StoryProvider")
+    public void VerifyShareViaText(TestData testData) {
+        Assert.assertTrue(storyPage.checkShareViaText(testData),
+                "Either share via text is not shown or wrong, check logs");
+    }
+
+    @TestDetails(testcaseID = "T14", executionType = ExecutionType.SANITY)
+    @Test(dataProvider = "StoryProvider")
+    public void VerifyShareOptionCount(TestData testData) {
+        Assert.assertTrue(storyPage.checkShareOptionCount(testData),
+                "Some share option icons are not shown, check logs");
+    }
+
+    @TestDetails(testcaseID = "T15", executionType = ExecutionType.SANITY)
+    @Test(dataProvider = "StoryProvider")
+    public void VerifyShareOptionsIconLoaded(TestData testData) {
+        Assert.assertTrue(storyPage.checkShareOptionsIconLoaded(testData),
+                "Some share option icons failed to load, check logs");
+    }
+
+    @TestDetails(testcaseID = "T16", executionType = ExecutionType.SANITY)
+    @Test(dataProvider = "StoryProvider")
+    public void VerifyShareOptionsURLs(TestData testData) {
+        Assert.assertTrue(storyPage.checkShareOptionsURLs(testData),
+                "Some share option urls are invalid, check logs");
+    }
+
+    @TestDetails(testcaseID = "T17", executionType = ExecutionType.SANITY)
+    @Test(dataProvider = "StoryProvider")
+    public void VerifyShareOptionsAlt(TestData testData) {
+        Assert.assertTrue(storyPage.checkShareOptionsAlt(testData),
+                "Some share option alt is wrong, check logs");
+    }
+
+    @TestDetails(testcaseID = "T18", executionType = ExecutionType.SANITY)
+    @Test(dataProvider = "StoryProvider")
+    public void VerifyStoryBannerLoaded(TestData testData) {
+        Assert.assertTrue(storyPage.checkStoryBannerLoaded(testData),
+                "Share Icon is not loaded");
     }
 }

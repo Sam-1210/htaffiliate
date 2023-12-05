@@ -2,6 +2,7 @@ package org.shopnow.utility;
 
 import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.shopnow.enums.PseudoSelector;
@@ -50,6 +51,10 @@ public class DriverHelper {
 
     public static WebElement ExplicitWaitForVisibility(WebDriver driver, Duration duration, By element) {
         return new WebDriverWait(driver, duration).until(ExpectedConditions.visibilityOfElementLocated(element));
+    }
+
+    public static Boolean ExplicitWaitForCondition(WebDriver driver, Duration duration, ExpectedCondition<Boolean> condition) {
+        return new WebDriverWait(driver, duration).until(condition);
     }
 
     public static WebElement ExplicitWaitForClickable(WebDriver driver, Duration duration, WebElement element) {

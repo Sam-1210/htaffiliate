@@ -22,7 +22,11 @@
     </test>-->
     <test name="Story">
         <classes>
-            <class name="org.shopnow.tests.StoryPage"/>
+            <class name="org.shopnow.tests.StoryPage">
+                <methods>
+                    <include name="VerifyShareOptionsIconLoaded"/>
+                </methods>
+            </class>
         </classes>
     </test>
     <!--<test name="Globals">

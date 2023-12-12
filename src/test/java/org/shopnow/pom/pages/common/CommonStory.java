@@ -2,12 +2,15 @@ package org.shopnow.pom.pages.common;
 
 import java.time.Duration;
 import java.util.List;
+import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import lombok.extern.java.Log;
 import org.json.JSONObject;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Point;
+import org.openqa.selenium.Rectangle;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.shopnow.base.BasePage;
@@ -19,6 +22,7 @@ import org.shopnow.utility.NetworkUtils;
 
 
 public class CommonStory extends BasePage {
+    private final String regexIndianPrice = "^₹ (\\d{1,3}(,\\d{3})*(\\.\\d{2})?)$";
     /**
      * naming conventions for locators
      * List* returns list
@@ -49,8 +53,18 @@ public class CommonStory extends BasePage {
     private static final By SummaryReadMore = By.cssSelector("div.summary > p.summary-desc > a");
     private static final By SummaryReadLess = By.cssSelector("div.summary > a#readLessBtn");
     private static final By SummaryProductPriceTable = By.cssSelector("div.summary > div.productTableContainer > table");
-
+    private static final By ListSummaryProductPriceTableRows = By.cssSelector("div.summary > div.productTableContainer > table > tbody > tr");
+    private static final By ProductCarouselParent = By.cssSelector("div.summary + div > div");
+    private static final By ProductCarouselTitle = By.cssSelector("div.summary + div > div > h2");
+    private static final By ProductCarouselCardContainerStatic = By.cssSelector("div.summary + div > div > div.product_slider");
+    private static final By ProductCarouselCardContainerDynamic = By.cssSelector("div.summary + div > div > div.product_slider > div.swiper-wrapper");
+    private static final By ListProductCarouselCards = By.cssSelector("div.summary + div > div > div.product_slider > div.swiper-wrapper div.swiper-slide");
+    private static final Function<Integer, By> ProductCarouselCard = (Integer index) -> By.cssSelector(String.format("div.summary + div > div > div.product_slider > div.swiper-wrapper div.swiper-slide:nth-child(%d)", index));
+    private static final By ProductCarouselButtonPrev = By.cssSelector("div.summary + div > div > div.product_slider > div.swiper-button-prev");
+    private static final By ProductCarouselButtonNext = By.cssSelector("div.summary + div > div > div.product_slider > div.swiper-button-next");
     // relative
+    private static final By _SummaryProductPriceTableLinkData = By.cssSelector("td:first-child a");
+    private static final By _SummaryProductPriceTablePriceData = By.cssSelector("td:last-child");
 
 
 
@@ -469,6 +483,341 @@ public class CommonStory extends BasePage {
         return result;
     }
 
+    public boolean checkSummaryTitleAndParagraph(TestData testData) {
+        boolean result = true;
+        JSONObject jTestData = (JSONObject)testData.GetData();
+
+        try {
+            DriverHelper.NavigateTo(driver, jTestData.getString("uri"));
+            if(!driver.findElement(SummaryPara).isDisplayed()) {
+                Logger.Error("Summary Title is not visible");
+                result = false;
+            }
+
+            if(!driver.findElement(SummaryPara).isDisplayed()) {
+                Logger.Error("Summary paragraph not visible");
+                result = false;
+            }
+        } catch (Exception e) {
+            Logger.Except(e);
+            result = false;
+        }
+        return result;
+    }
+
+    public boolean checkSummaryExpand(TestData testData) {
+        boolean result = true;
+        JSONObject jTestData = (JSONObject)testData.GetData();
+
+        try {
+            DriverHelper.NavigateTo(driver, jTestData.getString("uri"));
+            DriverHelper.ScrollWithJS(driver, SummaryReadMore);
+            DriverHelper.ClickWithJS(driver, SummaryReadMore);
+            DriverHelper.ForceWait(Duration.ofMillis(100));
+
+            if(!driver.findElement(SummaryPara).isDisplayed()) {
+                Logger.Error("Summary paragraph not visible after clicking read more");
+                result = false;
+            }
+
+            if(!driver.findElement(SummaryProductPriceTable).isDisplayed()) {
+                Logger.Error("Product Price Table is not visible after clicking on read more");
+                result = false;
+            }
+
+            if(!driver.findElement(SummaryReadLess).isDisplayed()) {
+                Logger.Error("Read less button is not displayed after expanding summary");
+                result = false;
+            }
+
+            if(driver.findElement(SummaryReadMore).isDisplayed()) {
+                Logger.Error("Read more button is still visible after expanding summary");
+                result = false;
+            }
+        } catch (Exception e) {
+            Logger.Except(e);
+            result = false;
+        }
+        return result;
+    }
+
+    public boolean checkSummaryCollapse(TestData testData) {
+        boolean result = true;
+        JSONObject jTestData = (JSONObject)testData.GetData();
+
+        try {
+            DriverHelper.NavigateTo(driver, jTestData.getString("uri"));
+            DriverHelper.ScrollWithJS(driver, SummaryReadMore);
+            DriverHelper.ClickWithJS(driver, SummaryReadMore);
+            DriverHelper.ForceWait(Duration.ofMillis(100));
+            if(!driver.findElement(SummaryReadLess).isDisplayed()) {
+                Logger.Error("Read less button is not displayed after expanding summary, test Halted");
+                return false;
+            }
+
+            DriverHelper.ClickWithJS(driver, SummaryReadLess);
+            DriverHelper.ForceWait(Duration.ofMillis(100));
+
+            if(!driver.findElement(SummaryPara).isDisplayed()) {
+                Logger.Error("Summary paragraph not visible after clicking read less");
+                result = false;
+            }
+
+            if(driver.findElement(SummaryProductPriceTable).isDisplayed()) {
+                Logger.Error("Product Price Table is visible after clicking on read less");
+                result = false;
+            }
+
+            if(driver.findElement(SummaryReadLess).isDisplayed()) {
+                Logger.Error("Read less button is not displayed after collpasing summary");
+                result = false;
+            }
+
+            if(!driver.findElement(SummaryReadMore).isDisplayed()) {
+                Logger.Error("Read more button is not visible after collapsing summary");
+                result = false;
+            }
+        } catch (Exception e) {
+            Logger.Except(e);
+            result = false;
+        }
+        return result;
+    }
+
+    public boolean checkProductPriceTableRowCount(TestData testData) {
+        boolean result = true;
+        JSONObject jTestData = (JSONObject)testData.GetData();
+        int expected = jTestData.getInt("productCount");
+
+        try {
+            DriverHelper.NavigateTo(driver, jTestData.getString("uri"));
+            DriverHelper.ClickWithJS(driver, SummaryReadMore);
+            DriverHelper.ForceWait(Duration.ofMillis(100));
+            int actual = driver.findElements(ListSummaryProductPriceTableRows).size();
+            if(actual != expected) {
+                Logger.Error("Product Count Mismatch ::: Expected: %d | Actual: %d", expected, actual);
+            }
+        } catch (Exception e) {
+            Logger.Except(e);
+            result = false;
+        }
+        return result;
+    }
+
+    public boolean checkProductPriceTableProductLinks(TestData testData) {
+        boolean result = true;
+        JSONObject jTestData = (JSONObject)testData.GetData();
+
+        try {
+            DriverHelper.NavigateTo(driver, jTestData.getString("uri"));
+            DriverHelper.ClickWithJS(driver, SummaryReadMore);
+            DriverHelper.ForceWait(Duration.ofMillis(100));
+            List<WebElement> rows = driver.findElements(ListSummaryProductPriceTableRows);
+
+            for(int i = 0; i < rows.size(); i++) {
+                WebElement ProdLink = rows.get(i).findElement(_SummaryProductPriceTableLinkData);
+                String href = ProdLink.getAttribute("data-vars-url");
+                int status = NetworkUtils.URLStatus(href);
+                if(status != 200 && status != 301) {
+                    Logger.Log("Invalid URL in Product Price Table: %s", href);
+                    result = false;
+                }
+            }
+        } catch (Exception e) {
+            Logger.Except(e);
+            result = false;
+        }
+        return result;
+    }
+
+    public boolean checkProductPriceTablePriceFormat(TestData testData) {
+        boolean result = true;
+        JSONObject jTestData = (JSONObject)testData.GetData();
+
+        try {
+            DriverHelper.NavigateTo(driver, jTestData.getString("uri"));
+            DriverHelper.ClickWithJS(driver, SummaryReadMore);
+            DriverHelper.ForceWait(Duration.ofMillis(100));
+            List<WebElement> rows = driver.findElements(ListSummaryProductPriceTableRows);
+            Pattern pattern = Pattern.compile(regexIndianPrice);
+
+            for(int i = 0; i < rows.size(); i++) {
+                WebElement ProdPrice = rows.get(i).findElement(_SummaryProductPriceTablePriceData);
+                String price = ProdPrice.getText();
+                Matcher matcher = pattern.matcher(price);
+                if(!price.trim().equalsIgnoreCase("Get Price")
+                && !matcher.matches()) {
+                    Logger.Error("Wrong Formatted Price: %s", price);
+                    result = false;
+                }
+            }
+        } catch (Exception e) {
+            Logger.Except(e);
+            result = false;
+        }
+        return result;
+    }
+
+    public boolean checkProductCarouselVisibleAndTitle(TestData testData) {
+        boolean result = true;
+        JSONObject jTestData = (JSONObject)testData.GetData();
+
+        try {
+            DriverHelper.NavigateTo(driver, jTestData.getString("uri"));
+            DriverHelper.ScrollWithJS(driver, ProductCarouselParent);
+            if(!driver.findElement(ProductCarouselParent).isDisplayed()) {
+                Logger.Error("Product carousel is not visible");
+                result = false;
+            }
+
+            String actual = driver.findElement(ProductCarouselTitle).getText();
+            String expected = "Products included in this article";
+            if(!actual.equalsIgnoreCase(expected)) {
+                Logger.Error("Title do not match ::: Expected: `%s` | Actual: `%s`", expected, actual);
+                result = false;
+            }
+
+        } catch (Exception e) {
+            Logger.Except(e);
+            result = false;
+        }
+        return result;
+    }
+
+    public boolean checkProductCarouselProdCount(TestData testData) {
+        boolean result = true;
+        JSONObject jTestData = (JSONObject)testData.GetData();
+        int expected = jTestData.getInt("productCount");
+
+        try {
+            DriverHelper.NavigateTo(driver, jTestData.getString("uri"));
+            int actual = driver.findElements(ListProductCarouselCards).size();
+            if(actual != expected) {
+                Logger.Error("Product Count Mismatch ::: Expected: %d | Actual: %d", expected, actual);
+            }
+        } catch (Exception e) {
+            Logger.Except(e);
+            result = false;
+        }
+        return result;
+    }
+
+    String tst(Rectangle rect) {
+        return String.format("[%d %d, %d %d]", rect.x, rect.y, rect.width, rect.height);
+    }
+    String tsp(Point p) {
+        return String.format("[%d %d]", p.x, p.y);
+    }
+
+    public boolean checkProdCarouselSwipe(TestData testData) {
+        boolean result = true;
+        JSONObject jTestData = (JSONObject)testData.GetData();
+        int sliderWait = 800;
+
+        try {
+            DriverHelper.NavigateTo(driver, jTestData.getString("uri"));
+            DriverHelper.ScrollWithJS(driver, ProductCarouselCardContainerStatic);
+
+            if(driver.findElement(ProductCarouselButtonPrev).isDisplayed()) {
+                Logger.Error("Left Arrow is being displayed in default case");
+                result = false;
+            }
+
+            List<WebElement> prodCards = driver.findElements(ListProductCarouselCards);
+            WebElement prodCardContainer = driver.findElement(ProductCarouselCardContainerStatic);
+            int countOfVisible = 0;
+            for (WebElement prodCard : prodCards) {
+                if (DriverHelper.IsElementInBounds(driver, prodCard, prodCardContainer)) countOfVisible++;
+            }
+
+            if(prodCards.size() == countOfVisible) {
+                if(driver.findElement(ProductCarouselButtonPrev).isDisplayed()) {
+                    Logger.Log("Left arrow is being displayed even when all prods are already in viewport");
+                    result = false;
+                }
+
+                if(driver.findElement(ProductCarouselButtonNext).isDisplayed()) {
+                    Logger.Log("Right arrow is being displayed even when all prods are already in viewport");
+                    result = false;
+                }
+            }
+
+            for(int i = countOfVisible; i < prodCards.size(); i++) {
+                Point old = prodCards.get(i).getLocation();
+
+                DriverHelper.ClickWithJS(driver, ProductCarouselButtonNext);
+
+                if(i == countOfVisible) {
+                    DriverHelper.ForceWait(Duration.ofMillis(100));
+                    if(!driver.findElement(ProductCarouselButtonPrev).isDisplayed()) {
+                        Logger.Error("Swiper back button not visible after right swipe");
+                        result = false;
+                    }
+                }
+
+                DriverHelper.ForceWait(Duration.ofMillis(sliderWait));
+
+                if(!DriverHelper.IsElementInBounds(driver, prodCards.get(i), prodCardContainer)) {
+                    Logger.Log("Next card doesn't become visible on right swipe");
+                    result = false;
+                }
+
+                if(!(prodCards.get(i).getLocation().x < old.x)) {
+                    Logger.Log("Next card's position has not changed");
+                    result = false;
+                }
+
+
+                if(i == prodCards.size() - 1) {
+                    DriverHelper.ForceWait(Duration.ofMillis(100));
+                    if(driver.findElement(ProductCarouselButtonNext).isDisplayed()) {
+                        Logger.Error("Swiper right button is visible even at end of swiper");
+                        result = false;
+                    }
+                    if(!driver.findElement(ProductCarouselButtonPrev).isDisplayed()) {
+                        Logger.Error("Swiper left button is not visible at end of swiper");
+                        result = false;
+                    }
+                }
+            }
+
+            // do opposite swipe on prev button
+            for(int i = prodCards.size() - 1; i >= countOfVisible; i--) {
+                Point old = prodCards.get(i).getLocation();
+                DriverHelper.ClickWithJS(driver, ProductCarouselButtonPrev);
+
+                DriverHelper.ForceWait(Duration.ofMillis(sliderWait));
+                int index = i - countOfVisible;
+                if(!DriverHelper.IsElementInBounds(driver, prodCards.get(index), prodCardContainer)) {
+                    Logger.Log("previous card doesn't become visible on left swipe");
+                    result = false;
+                }
+
+                if(!(prodCards.get(i).getLocation().x > old.x)) {
+                    Logger.Log("previous card's position has not changed");
+                    result = false;
+                }
+
+
+                if(i == countOfVisible) {
+                    DriverHelper.ForceWait(Duration.ofMillis(100));
+                    if(!driver.findElement(ProductCarouselButtonNext).isDisplayed()) {
+                        Logger.Error("Swiper right button is not  visible even at beginning of swiper");
+                        result = false;
+                    }
+                    if(driver.findElement(ProductCarouselButtonPrev).isDisplayed()) {
+                        Logger.Error("Swiper left button is visible at beginning of swiper");
+                        result = false;
+                    }
+                }
+            }
+        } catch (Exception e) {
+            Logger.Except(e);
+            result = false;
+        }
+        return result;
+    }
+
     public boolean checkXXXXX(TestData testData) {
         boolean result = true;
         JSONObject jTestData = (JSONObject)testData.GetData();
@@ -534,22 +883,6 @@ public class CommonStory extends BasePage {
     }
 
     public boolean checkX(TestData testData) {
-        boolean result = true;
-        JSONObject jTestData = (JSONObject)testData.GetData();
-
-        try {
-            DriverHelper.NavigateTo(driver, jTestData.getString("uri"));
-
-
-
-        } catch (Exception e) {
-            Logger.Except(e);
-            result = false;
-        }
-        return result;
-    }
-
-    public boolean checkXXXXXXX(TestData testData) {
         boolean result = true;
         JSONObject jTestData = (JSONObject)testData.GetData();
 

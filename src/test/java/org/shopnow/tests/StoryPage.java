@@ -221,4 +221,53 @@ public class StoryPage extends BaseTest {
         Assert.assertTrue(storyPage.checkProdCarouselSwipe(testData),
                 "Some sub-tests failed, check logs");
     }
+
+    @TestDetails(testcaseID = "T28", executionType = ExecutionType.SANITY)
+    @Test(dataProvider = "StoryProvider")
+    public void VerifyProdCarouselCardOurPickBadge(TestData testData) {
+        Assert.assertTrue(storyPage.checkProdCarouselCardOurPickBadge(testData),
+                "Some sub-tests failed, check logs");
+    }
+
+    @TestDetails(testcaseID = "T29", executionType = ExecutionType.SANITY)
+    @Test(dataProvider = "StoryProvider")
+    public void VerifyProdCarouselCardGetPriceCase(TestData testData) {
+        Assert.assertTrue(storyPage.checkProdCarouselCardGetPriceCase(testData),
+                "Some sub-tests failed, check logs");
+    }
+
+    @TestDetails(testcaseID = "T30", executionType = ExecutionType.SANITY)
+    @Test(dataProvider = "StoryProvider")
+    public void VerifyProdCarouselCardNumericalPriceCase(TestData testData) {
+        Assert.assertTrue(storyPage.checkProdCarouselCardNumericalPriceCase(testData),
+                "Some sub-tests failed, check logs");
+    }
+
+    @TestDetails(testcaseID = "T31", executionType = ExecutionType.SANITY)
+    @Test(dataProvider = "StoryProvider")
+    public void VerifyProdCarouselCardPriceFormat(TestData testData) {
+        Assert.assertTrue(storyPage.checkProdCarouselCardPriceFormat(testData),
+                "Some sub-tests failed, check logs");
+    }
+
+    @TestDetails(testcaseID = "T32", executionType = ExecutionType.SANITY)
+    @Test(dataProvider = "StoryProvider")
+    public void VerifyProdCarouselDiscountFormat(TestData testData) {
+        Assert.assertTrue(storyPage.checkProdCarouselDiscountFormat(testData),
+                "Some sub-tests failed, check logs");
+    }
+
+    @TestDetails(testcaseID = "T33", executionType = ExecutionType.SANITY)
+    @Test(dataProvider = "StoryProvider")
+    public void VerifyProdCarouselCardTitleVisiblity(TestData testData) {
+        Assert.assertTrue(storyPage.checkProdCarouselCardTitleVisiblity(testData),
+                "Some sub-tests failed, check logs");
+    }
+
+    @TestDetails(testcaseID = "T34", executionType = ExecutionType.SANITY)
+    @Test(dataProvider = "StoryProvider")
+    public void VerifyProdCarouselCardImagesLoaded(TestData testData) {
+        Assert.assertTrue(storyPage.checkProdCarouselCardImagesLoaded(testData),
+                "Some sub-tests failed, check logs");
+    }
 }

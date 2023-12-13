@@ -3,6 +3,7 @@ package org.shopnow.pom.pages.common;
 import java.time.Duration;
 import java.util.List;
 import java.util.function.Function;
+import java.util.function.LongFunction;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -23,6 +24,9 @@ import org.shopnow.utility.NetworkUtils;
 
 public class CommonStory extends BasePage {
     private final String regexIndianPrice = "^₹ (\\d{1,3}(,\\d{3})*(\\.\\d{2})?)$";
+    private final String regexProductCarouselMRP = "^₹(\\d{1,3}(,\\d{3})*(\\.\\d{2})?)$";
+    private final String regexProductCarouselDiscount = "^(100|[1-9][0-9]?)% off$";
+    private final String regexProductCarouselButtonPrice = "^₹ (\\d{1,3}(,\\d{3})*(\\.\\d{2})?) from$";
     /**
      * naming conventions for locators
      * List* returns list
@@ -65,8 +69,12 @@ public class CommonStory extends BasePage {
     // relative
     private static final By _SummaryProductPriceTableLinkData = By.cssSelector("td:first-child a");
     private static final By _SummaryProductPriceTablePriceData = By.cssSelector("td:last-child");
-
-
+    private static final By _ProductCarouselCardOurPickBadge = By.cssSelector("span.our_pick");
+    private static final By _ProductCarouselCardImage = By.cssSelector("span.product_box_img img");
+    private static final By _ProductCarouselCardBuyButton = By.tagName("button");
+    private static final By _ProductCarouselCardTitle = By.cssSelector("p.h3-heading");
+    private static final By _ProductCarouselCardMRP = By.cssSelector("span.pricing_cut");
+    private static final By _ProductCarouselCardDiscount = By.cssSelector("span.pricing_off");
 
     /**
      * mandatory test | Platform Specifics
@@ -702,13 +710,6 @@ public class CommonStory extends BasePage {
         return result;
     }
 
-    String tst(Rectangle rect) {
-        return String.format("[%d %d, %d %d]", rect.x, rect.y, rect.width, rect.height);
-    }
-    String tsp(Point p) {
-        return String.format("[%d %d]", p.x, p.y);
-    }
-
     public boolean checkProdCarouselSwipe(TestData testData) {
         boolean result = true;
         JSONObject jTestData = (JSONObject)testData.GetData();
@@ -818,15 +819,20 @@ public class CommonStory extends BasePage {
         return result;
     }
 
-    public boolean checkXXXXX(TestData testData) {
+    public boolean checkProdCarouselCardOurPickBadge(TestData testData) {
         boolean result = true;
         JSONObject jTestData = (JSONObject)testData.GetData();
 
         try {
             DriverHelper.NavigateTo(driver, jTestData.getString("uri"));
-
-
-
+            DriverHelper.ScrollWithJS(driver, ProductCarouselCardContainerStatic);
+            List<WebElement> prodCards = driver.findElements(ListProductCarouselCards);
+            if(prodCards.size() == 0) return true;
+            List<WebElement> ourPickBadge = prodCards.get(0).findElements(_ProductCarouselCardOurPickBadge);
+            if(ourPickBadge.size() == 0) {
+                Logger.Error("Our pick badge is not shown for first product in carousel");
+                result = false;
+            }
         } catch (Exception e) {
             Logger.Except(e);
             result = false;
@@ -834,15 +840,40 @@ public class CommonStory extends BasePage {
         return result;
     }
 
-    public boolean checkXXXX(TestData testData) {
+    public boolean checkProdCarouselCardGetPriceCase(TestData testData) {
         boolean result = true;
         JSONObject jTestData = (JSONObject)testData.GetData();
 
         try {
             DriverHelper.NavigateTo(driver, jTestData.getString("uri"));
+            DriverHelper.ScrollWithJS(driver, ProductCarouselCardContainerStatic);
+            List<WebElement> prodCards = driver.findElements(ListProductCarouselCards);
 
-
-
+            for(WebElement card: prodCards) {
+                WebElement buyButton = card.findElement(_ProductCarouselCardBuyButton);
+                String buttonText = buyButton.getText();
+                String prodTitle = card.findElement(_ProductCarouselCardTitle).getText();
+                Pattern pattern = Pattern.compile(regexProductCarouselButtonPrice);
+                Matcher matcher = pattern.matcher(buttonText);
+                if(!matcher.matches())
+                {
+                    if(buttonText.trim().equalsIgnoreCase("Get Price from")) {
+                        List<WebElement> mrp = card.findElements(_ProductCarouselCardMRP);
+                        List<WebElement> discount = card.findElements(_ProductCarouselCardDiscount);
+                        if(mrp.size() > 0 && mrp.get(0).isDisplayed()) {
+                            Logger.Error("MRP is displayed while button shows get price, product: `%s`", prodTitle);
+                            result = false;
+                        }
+                        if(discount.size() > 0 && discount.get(0).isDisplayed()) {
+                            Logger.Error("Discount is displayed while button shows get price, product: `%s`", prodTitle);
+                            result = false;
+                        }
+                    } else {
+                        Logger.Error("Wrong Formatted Price: `%s`, product: `%s`", buttonText, prodTitle);
+                        result = false;
+                    }
+                }
+            }
         } catch (Exception e) {
             Logger.Except(e);
             result = false;
@@ -850,15 +881,37 @@ public class CommonStory extends BasePage {
         return result;
     }
 
-    public boolean checkXXX(TestData testData) {
+    public boolean checkProdCarouselCardNumericalPriceCase(TestData testData) {
         boolean result = true;
         JSONObject jTestData = (JSONObject)testData.GetData();
 
         try {
             DriverHelper.NavigateTo(driver, jTestData.getString("uri"));
+            DriverHelper.ScrollWithJS(driver, ProductCarouselCardContainerStatic);
+            List<WebElement> prodCards = driver.findElements(ListProductCarouselCards);
 
-
-
+            for(WebElement card: prodCards) {
+                WebElement buyButton = card.findElement(_ProductCarouselCardBuyButton);
+                String buttonText = buyButton.getText();
+                String prodTitle = card.findElement(_ProductCarouselCardTitle).getText();
+                Pattern pattern = Pattern.compile(regexProductCarouselButtonPrice);
+                Matcher matcher = pattern.matcher(buttonText);
+                if(matcher.matches())
+                {
+                    List<WebElement> mrp = card.findElements(_ProductCarouselCardMRP);
+                    List<WebElement> discount = card.findElements(_ProductCarouselCardDiscount);
+                    if((mrp.size() == 0 || !mrp.get(0).isDisplayed())
+                    && (discount.size() > 0 && discount.get(0).isDisplayed())) {
+                        Logger.Error("MRP is not displayed while discount is displayed, product: `%s`", prodTitle);
+                        result = false;
+                    }
+                    if((mrp.size() > 0 && mrp.get(0).isDisplayed())
+                            && (discount.size() == 0 || !discount.get(0).isDisplayed())) {
+                        Logger.Error("Discount is displayed while MRP is not displayed, product: `%s`", prodTitle);
+                        result = false;
+                    }
+                }
+            }
         } catch (Exception e) {
             Logger.Except(e);
             result = false;
@@ -866,7 +919,130 @@ public class CommonStory extends BasePage {
         return result;
     }
 
-    public boolean checkXX(TestData testData) {
+    public boolean checkProdCarouselCardPriceFormat(TestData testData) {
+        boolean result = true;
+        JSONObject jTestData = (JSONObject)testData.GetData();
+
+        try {
+            DriverHelper.NavigateTo(driver, jTestData.getString("uri"));
+            DriverHelper.ScrollWithJS(driver, ProductCarouselCardContainerStatic);
+            List<WebElement> prodCards = driver.findElements(ListProductCarouselCards);
+
+            for(WebElement card: prodCards) {
+                WebElement buyButton = card.findElement(_ProductCarouselCardBuyButton);
+                String buttonText = buyButton.getText();
+                String prodTitle = card.findElement(_ProductCarouselCardTitle).getText();
+                Pattern patternButtonPrice = Pattern.compile(regexProductCarouselButtonPrice);
+                Matcher matcherButtonPrice = patternButtonPrice.matcher(buttonText);
+
+                List<WebElement> mrp = card.findElements(_ProductCarouselCardMRP);
+                if(matcherButtonPrice.matches()) {
+                    if(mrp.size() > 0 && mrp.get(0).isDisplayed()) {
+                        String mrpText = mrp.get(0).getText();
+                        Pattern patternMRP = Pattern.compile(regexProductCarouselMRP);
+                        Matcher matcherMRP = patternMRP.matcher(mrpText);
+                        if(!matcherMRP.matches()) {
+                            Logger.Error("MRP is displayed in wrong format, product: `%s`", prodTitle);
+                            result = false;
+                        }
+                    }
+                } else if(!buttonText.trim().equalsIgnoreCase("Get Price from")) {
+                    Logger.Error("Wrong Formatted Price: `%s`, product: `%s`", buttonText, prodTitle);
+                    result = false;
+                }
+            }
+        } catch (Exception e) {
+            Logger.Except(e);
+            result = false;
+        }
+        return result;
+    }
+
+    public boolean checkProdCarouselDiscountFormat(TestData testData) {
+        boolean result = true;
+        JSONObject jTestData = (JSONObject)testData.GetData();
+
+        try {
+            DriverHelper.NavigateTo(driver, jTestData.getString("uri"));
+            DriverHelper.ScrollWithJS(driver, ProductCarouselCardContainerStatic);
+            List<WebElement> prodCards = driver.findElements(ListProductCarouselCards);
+
+            for(WebElement card: prodCards) {
+                WebElement buyButton = card.findElement(_ProductCarouselCardBuyButton);
+                String buttonText = buyButton.getText();
+                String prodTitle = card.findElement(_ProductCarouselCardTitle).getText();
+                Pattern patternButtonPrice = Pattern.compile(regexProductCarouselButtonPrice);
+                Matcher matcherButtonPrice = patternButtonPrice.matcher(buttonText);
+
+                List<WebElement> discount = card.findElements(_ProductCarouselCardDiscount);
+                if(matcherButtonPrice.matches()) {
+                    if (discount.size() > 0 && discount.get(0).isDisplayed()) {
+                        String discountText = discount.get(0).getText();
+                        Pattern patternDis = Pattern.compile(regexProductCarouselDiscount);
+                        Matcher matcherDis = patternDis.matcher(discountText);
+                        if (!matcherDis.matches()) {
+                            Logger.Error("Discount is displayed in wrong format, product: `%s`", prodTitle);
+                            result = false;
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            Logger.Except(e);
+            result = false;
+        }
+        return result;
+    }
+
+    public boolean checkProdCarouselCardTitleVisiblity(TestData testData) {
+        boolean result = true;
+        JSONObject jTestData = (JSONObject)testData.GetData();
+
+        try {
+            DriverHelper.NavigateTo(driver, jTestData.getString("uri"));
+            DriverHelper.ScrollWithJS(driver, ProductCarouselCardContainerStatic);
+            List<WebElement> prodCards = driver.findElements(ListProductCarouselCards);
+
+            for(WebElement card: prodCards) {
+                WebElement prodTitle = card.findElement(_ProductCarouselCardTitle);
+
+                if(!prodTitle.isDisplayed()) {
+                    Logger.Error("Product Title is not displayed");
+                }
+            }
+        } catch (Exception e) {
+            Logger.Except(e);
+            result = false;
+        }
+        return result;
+    }
+
+    public boolean checkProdCarouselCardImagesLoaded(TestData testData) {
+        boolean result = true;
+        JSONObject jTestData = (JSONObject)testData.GetData();
+
+        try {
+            DriverHelper.NavigateTo(driver, jTestData.getString("uri"));
+            DriverHelper.ScrollWithJS(driver, ProductCarouselCardContainerStatic);
+            List<WebElement> prodCards = driver.findElements(ListProductCarouselCards);
+
+            for(WebElement card: prodCards) {
+                String prodTitle = card.findElement(_ProductCarouselCardTitle).getText();
+                String href = card.findElement(_ProductCarouselCardImage).getAttribute("src");
+                int status = NetworkUtils.URLStatus(href);
+                if(status != 200) {
+                    Logger.Error("Image Not Loaded, product: `%s`", prodTitle);
+                    result = false;
+                }
+            }
+        } catch (Exception e) {
+            Logger.Except(e);
+            result = false;
+        }
+        return result;
+    }
+
+    public boolean checkXx(TestData testData) {
         boolean result = true;
         JSONObject jTestData = (JSONObject)testData.GetData();
 

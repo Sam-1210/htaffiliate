@@ -270,4 +270,74 @@ public class StoryPage extends BaseTest {
         Assert.assertTrue(storyPage.checkProdCarouselCardImagesLoaded(testData),
                 "Some sub-tests failed, check logs");
     }
+
+    @TestDetails(testcaseID = "T35", executionType = ExecutionType.SANITY)
+    @Test(dataProvider = "StoryProvider")
+    public void VerifyProdCarouselCardVendorLogoLoaded(TestData testData) {
+        Assert.assertTrue(storyPage.checkProdCarouselCardVendorLogoLoaded(testData),
+                "Some sub-tests failed, check logs");
+    }
+
+    @TestDetails(testcaseID = "T36", executionType = ExecutionType.SANITY)
+    @Test(dataProvider = "StoryProvider")
+    public void VerifyListiclesCount(TestData testData) {
+        Assert.assertTrue(storyPage.checkListiclesCount(testData),
+                "Count Mismatch, check logs");
+    }
+
+    @TestDetails(testcaseID = "T37", executionType = ExecutionType.SANITY)
+    @Test(dataProvider = "StoryProvider")
+    public void VerifyListiclesOurPickBadge(TestData testData) {
+        Assert.assertTrue(storyPage.checkListiclesOurPickBadge(testData),
+                "Some sub-tests failed, check logs");
+    }
+
+    @TestDetails(testcaseID = "T38", executionType = ExecutionType.SANITY)
+    @Test(dataProvider = "StoryProvider")
+    public void VerifyListiclesGetPriceCase(TestData testData) {
+        Assert.assertTrue(storyPage.checkListiclesGetPriceCase(testData),
+                "Some sub-tests failed, check logs");
+    }
+
+    @TestDetails(testcaseID = "T39", executionType = ExecutionType.SANITY)
+    @Test(dataProvider = "StoryProvider")
+    public void VerifyListiclesNumericalPriceCase(TestData testData) {
+        Assert.assertTrue(storyPage.checkListiclesNumericalPriceCase(testData),
+                "Some sub-tests failed, check logs");
+    }
+
+    @TestDetails(testcaseID = "T40", executionType = ExecutionType.SANITY)
+    @Test(dataProvider = "StoryProvider")
+    public void VerifyListiclesPriceFormat(TestData testData) {
+        Assert.assertTrue(storyPage.checkListiclesPriceFormat(testData),
+                "Some sub-tests failed, check logs");
+    }
+
+    @TestDetails(testcaseID = "T41", executionType = ExecutionType.SANITY)
+    @Test(dataProvider = "StoryProvider")
+    public void VerifyListiclesDiscountFormat(TestData testData) {
+        Assert.assertTrue(storyPage.checkListiclesDiscountFormat(testData),
+                "Some sub-tests failed, check logs");
+    }
+
+    @TestDetails(testcaseID = "T42", executionType = ExecutionType.SANITY)
+    @Test(dataProvider = "StoryProvider")
+    public void VerifyListiclesTitleVisiblity(TestData testData) {
+        Assert.assertTrue(storyPage.checkListiclesTitleVisiblity(testData),
+                "Some sub-tests failed, check logs");
+    }
+
+    @TestDetails(testcaseID = "T43", executionType = ExecutionType.SANITY)
+    @Test(dataProvider = "StoryProvider")
+    public void VerifyListiclesProdImagesLoaded(TestData testData) {
+        Assert.assertTrue(storyPage.checkListiclesProdImagesLoaded(testData),
+                "Some sub-tests failed, check logs");
+    }
+
+    @TestDetails(testcaseID = "T44", executionType = ExecutionType.SANITY)
+    @Test(dataProvider = "StoryProvider")
+    public void VerifyListiclesVendorLogoLoaded(TestData testData) {
+        Assert.assertTrue(storyPage.checkListiclesVendorLogoLoaded(testData),
+                "Some sub-tests failed, check logs");
+    }
 }

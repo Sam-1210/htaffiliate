@@ -9,7 +9,7 @@
     <parameter name="executionType" value="sanity"/>
     <parameter name="platformName" value="web"/>
     <parameter name="browser" value="chrome"/>
-    <parameter name="browserMode" value="normal"/>
+    <parameter name="browserMode" value="headless"/>
     <parameter name="isBrowserStack" value="false"/>
     <parameter name="isAppium" value="false"/>
     <parameter name="capabilitiesJson" value="windows10_chrome"/>

@@ -45,6 +45,15 @@ public class DriverHelper {
         new Actions(driver).moveToElement(element).perform();
     }
 
+    public static void ForceWait(Duration duration) {
+        try {
+            Thread.sleep(duration.toMillis());
+        } catch (Exception e) {
+            Logger.Except(e);
+        }
+
+    }
+
     public static WebElement ExplicitWaitForVisibility(WebDriver driver, Duration duration, WebElement element) {
         return new WebDriverWait(driver, duration).until(ExpectedConditions.visibilityOf(element));
     }
@@ -74,10 +83,36 @@ public class DriverHelper {
     }
 
     // misc
-    public String GetContentOfPseudoElement(WebDriver driver, String css, PseudoSelector psuedoSelector) {
+    public static String GetContentOfPseudoElement(WebDriver driver, String css, PseudoSelector psuedoSelector) {
         return ((JavascriptExecutor) driver).executeScript(
                         String.format("return window.getComputedStyle(document.querySelector('%s'),'%s').getPropertyValue('content')",
                                 css, psuedoSelector.name()))
                 .toString();
+    }
+
+    // UI helpers
+    public static boolean IsElementInBounds(WebDriver driver, By element, By BoundedByElement) {
+
+        return IsElementInBounds(driver, driver.findElement(element), driver.findElement(BoundedByElement));
+    }
+
+    public static boolean IsElementInBounds(WebDriver driver, WebElement element, WebElement BoundedByElement) {
+        Rectangle childRect = element.getRect();
+        Rectangle parentRect = BoundedByElement.getRect();
+
+        int childLeftX = childRect.getX();
+        int childRightX = childLeftX + childRect.getWidth();
+        int childTopY = childRect.getY();
+        int childBottomY = childTopY + childRect.getHeight();
+
+        int parentLeftX = parentRect.getX();
+        int parentRightX = parentLeftX + parentRect.getWidth();
+        int parentTopY = parentRect.getY();
+        int parentBottomY = parentTopY + parentRect.getHeight();
+
+        return childLeftX >= parentLeftX &&
+                childRightX <= parentRightX &&
+                childTopY >= parentTopY &&
+                childBottomY <= parentBottomY;
     }
 }

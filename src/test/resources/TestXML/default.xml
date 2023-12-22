@@ -14,7 +14,7 @@
     <parameter name="isAppium" value="false"/>
     <parameter name="capabilitiesJson" value="windows10_chrome"/>
     <parameter name="buildNumber" value="12302"/>
-    <parameter name="googleSheetFlag" value="true"/>
+    <parameter name="googleSheetFlag" value="false"/>
     <!--<test name="AffiliateRevenue">
         <classes>
             <class name="org.shopnow.tests.AffiliateRevenue"/>
@@ -22,8 +22,10 @@
     </test>-->
     <test name="Story">
         <classes>
-            <class name="org.shopnow.tests.HomePage">
-
+            <class name="org.shopnow.tests.StoryPage">
+                <!--<methods>
+                    <include name="VerifyProdCarouselSwipe"/>
+                </methods>-->
             </class>
         </classes>
     </test>

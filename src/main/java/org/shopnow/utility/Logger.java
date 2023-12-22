@@ -63,8 +63,9 @@ public class Logger {
         log(YELLOW,"EXCEPTION", e.toString() + " - " + formattedMsg);
     }
 
-    public static void Heading(String title) {
+    public static void Heading(String format, Object... args) {
         String hashLine = "#".repeat(15);
-        log(WHITE, "HEAD", String.format("%s %s %s", hashLine, title, hashLine));
+        String formattedMsg = String.format(format, args);
+        log(WHITE, "HEAD", String.format("%s %s %s", hashLine, formattedMsg, hashLine));
     }
 }

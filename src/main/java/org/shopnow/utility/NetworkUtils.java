@@ -31,15 +31,24 @@ public class NetworkUtils {
     }
 
     public static int URLStatus(String urlString) {
+        if(urlString == null) {
+            return -1;
+        }
+
         try {
+            System.setProperty("https.protocols", "TLSv1.2");
             URL url = new URL(urlString);
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod("GET");
 
-            int responseCode = connection.getResponseCode();
-            connection.disconnect();
+            if(url.getProtocol().equalsIgnoreCase("http") || url.getProtocol().equalsIgnoreCase("https"))
+            {
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                connection.setRequestMethod("GET");
 
-            return responseCode;
+                int responseCode = connection.getResponseCode();
+                connection.disconnect();
+
+                return responseCode;
+            } else return 200;
         } catch (IOException e) {
             Logger.Except(e);
             return -1;

@@ -5,7 +5,7 @@
         <listener class-name="org.shopnow.listeners.TestListener"/>
     </listeners>
 
-    <parameter name="environment" value="preprod"/>
+    <parameter name="environment" value="prod"/>
     <parameter name="executionType" value="sanity"/>
     <parameter name="platformName" value="web"/>
     <parameter name="browser" value="chrome"/>
@@ -22,10 +22,8 @@
     </test>-->
     <test name="Story">
         <classes>
-            <class name="org.shopnow.tests.StoryPage">
-                <methods>
-                    <include name="VerifyShareOptionsIconLoaded"/>
-                </methods>
+            <class name="org.shopnow.tests.HomePage">
+
             </class>
         </classes>
     </test>

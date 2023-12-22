@@ -28,6 +28,14 @@ public class TestListener extends TestListenerAdapter {
         Logger.Heading("Test - " + MethodName);
     }
 
+    @Override
+    public void onTestSkipped(ITestResult result) {
+        if (result.getThrowable() instanceof SkipException) {
+            Logger.Log("Test Skipped: ", result.getMethod().getMethodName());
+            Logger.Log("Skip Reason: ", result.getThrowable().getMessage());
+        }
+    }
+
     private boolean isMismatched(Platforms[] requiredValues, Platforms currentValue) {
         boolean isMisMatch = requiredValues.length != 0;
 

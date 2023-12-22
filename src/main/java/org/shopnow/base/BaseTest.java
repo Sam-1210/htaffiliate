@@ -1,6 +1,7 @@
 package org.shopnow.base;
 
 import org.apache.poi.ss.formula.functions.T;
+import org.openqa.selenium.WebDriver;
 import org.shopnow.annotations.TestDetails;
 import org.shopnow.enums.*;
 import org.shopnow.enums.SupportedBrowsers;
@@ -8,6 +9,7 @@ import org.shopnow.structures.ApplicationProperties;
 import org.shopnow.structures.TestData;
 import org.shopnow.utility.DriverManager;
 import org.shopnow.utility.Logger;
+import org.shopnow.utility.NetworkUtils;
 import org.shopnow.utility.TestDataManager;
 import org.testng.*;
 import org.testng.annotations.*;
@@ -74,6 +76,16 @@ public class BaseTest implements IHookable {
 
     @BeforeClass
     public void SetupClass() {
+        Logger.Heading("Setting up Test Class: %s", this.getClass().getSimpleName());
+        String homepage = ApplicationProperties.getInstance().getEnvironment().getURL();
+        Logger.Log("Trying To Establish A Connection To: %s", homepage);
+        if (NetworkUtils.URLStatus(homepage) != 200) {
+            Logger.Error("Failed to reach homepage: %s", homepage);
+            Logger.Except(new SkipException("Skipping the test class as the homepage is not reachable"));
+            throw new SkipException("Skipping the test class as the homepage is not reachable");
+        }
+
+        Logger.Heading("Setting up Test Data Manager");
         testDataManager = new TestDataManager(this.getClass());
     }
 

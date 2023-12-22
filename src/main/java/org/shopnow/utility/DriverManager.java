@@ -52,12 +52,30 @@ public class DriverManager {
     }
 
     public void Quit() {
-        driver.quit();
+        if(driver != null)
+        {
+            INSTANCES.remove();
+            driver.quit();
+        }
     }
 
     public static void QuitAll() {
         for (Thread thread : Thread.getAllStackTraces().keySet()) {
-            INSTANCES.get().Quit();
+            if(INSTANCES.get() != null)
+                INSTANCES.get().Quit();
+        }
+    }
+
+    @Override
+    protected void finalize() throws Throwable {
+        try {
+            Logger.Log("Trying To Force Quit Driver");
+            if (driver != null) {
+                INSTANCES.remove();
+                driver.quit();
+            }
+        } finally {
+            super.finalize();
         }
     }
 }

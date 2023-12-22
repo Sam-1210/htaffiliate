@@ -8,6 +8,7 @@ import org.shopnow.enums.POM;
 import org.shopnow.pom.pages.common.CommonHome;
 import org.shopnow.pom.pages.common.CommonStory;
 import org.shopnow.structures.TestData;
+import org.shopnow.utility.TestDataManager;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
@@ -25,8 +26,8 @@ public class StoryPage extends BaseTest {
 
     @DataProvider(name = "StoryProvider")
     public Object[][] StoryProvider() {
-        TestData testData = new TestData("{\"uri\":\"electronics/gadgets/top-10-casio-watches-for-2023-with-timeless-style-201683609269436.html\", \"productCount\":1, \"isProd\":true}");
-
+        //TestData testData = new TestData("{\"uri\":\"electronics/gadgets/top-10-casio-watches-for-2023-with-timeless-style-201683609269436.html\", \"productCount\":1, \"isProd\":true}");
+        TestData testData = GetTestData();
         // only add stories whose env matches test env
 
         return new Object[][] {

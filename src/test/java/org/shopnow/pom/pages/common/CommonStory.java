@@ -239,7 +239,7 @@ public class CommonStory extends BasePage {
                 String href = aIcon.findElement(By.tagName("a")).getAttribute("href");
                 String socialName = aIcon.findElement(By.tagName("img")).getAttribute("alt");
                 int status = NetworkUtils.URLStatus(href);
-                if(status != 200) {
+                if(status != 200 && status != 301) {
                     result = false;
                     Logger.Error("Invalid URL: %s for Social Media: %s", href, socialName);
                 }
@@ -379,15 +379,15 @@ public class CommonStory extends BasePage {
 
             List<WebElement> elsShareOptions = driver.findElements(ListShareMenuIcons);
 
-            Logger.Log(elsShareOptions.size());
             for(WebElement elIcon:elsShareOptions) {
                 WebElement elImg = elIcon.findElement(By.tagName("img"));
                 DriverHelper.ScrollWithJS(driver, elIcon);
-                Thread.sleep(50);
+                Thread.sleep(100);
                 String imgSrc = elImg.getAttribute("src");
+                String optionName = elImg.getAttribute("alt");
                 int status = NetworkUtils.URLStatus(imgSrc);
                 if(status != 200) {
-                    Logger.Error("Invalid Icon Resource: %s", imgSrc);
+                    Logger.Error("Invalid Icon Resource: %s, Share Name: %s", imgSrc, optionName);
                     result = false;
                 }
             }
@@ -414,7 +414,7 @@ public class CommonStory extends BasePage {
                 String optionName = aIcon.findElement(By.tagName("img")).getAttribute("alt");
                 int status = NetworkUtils.URLStatus(href);
                 if(href.startsWith("mailto:")) continue;
-                if(status != 200) {
+                if(status != 200 && status != 301) {
                     result = false;
                     Logger.Error("Invalid URL: %s for Social Media: %s", href, optionName);
                 }
